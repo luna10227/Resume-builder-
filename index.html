@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instant Resume Builder</title>
+    <!-- Tailwind CSS Engine -->
+    <script src="https://jsdelivr.net"></script>
+    <!-- html2pdf.js Compilation Dependency -->
+    <script src="https://cloudflare.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen font-sans">
+
+    <!-- Navigation Header Bar -->
+    <nav class="bg-slate-900 text-white p-4 shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold tracking-wide flex items-center gap-2">📄 GitResume</h1>
+            <button onclick="downloadPDF()" class="bg-emerald-500 hover:bg-emerald-600 px-5 py-2 rounded-md font-semibold text-sm transition shadow-sm active:scale-95 cursor-pointer">
+                Download PDF
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Dynamic Layout workspace Split -->
+    <main class="max-w-7xl mx-auto my-6 px-4 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        
+        <!-- Interactive User Settings / Forms Panel -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 space-y-6 max-h-[85vh] overflow-y-auto">
+            <h2 class="text-xl font-bold text-gray-800 border-b border-gray-100 pb-3">Enter Data Fields</h2>
+            
+            <!-- Personal details Section Block -->
+            <div class="space-y-4">
+                <h3 class="text-sm font-semibold text-blue-600 tracking-wide uppercase">Personal Information</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Full Name</label>
+                        <input type="text" id="formName" placeholder="John Doe" oninput="updateResume()" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Professional Designation</label>
+                        <input type="text" id="formTitle" placeholder="Software Engineer" oninput="updateResume()" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Email Address</label>
+                        <input type="email" id="formEmail" placeholder="johndoe@example.com" oninput="updateResume()" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Phone Number</label>
+                        <input type="text" id="formPhone" placeholder="(555) 019-2834" oninput="updateResume()" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Location</label>
+                        <input type="text" id="formLocation" placeholder="Austin, TX" oninput="updateResume()" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 mb-1">Executive Profile Summary</label>
+                    <textarea id="formSummary" placeholder="Motivated engineer with 5+ years of experience specialized in building..." oninput="updateResume()" rows="3" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500"></textarea>
+                </div>
+            </div>
+
+            <!-- Professional Experience Section Block -->
+            <div class="space-y-4 border-t border-gray-100 pt-5">
+                <h3 class="text-sm font-semibold text-blue-600 tracking-wide uppercase">Work Experience</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Company / Organization</label>
+                        <input type="text" id="formCompany" placeholder="Tech Innovations Inc." oninput="updateResume()" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Job Title</label>
+                        <input type="text" id="formRole" placeholder="Senior Frontend Developer" oninput="updateResume()" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 mb-1">Employment Duration</label>
+                    <input type="text" id="formExpDates" placeholder="Jan 2023 - Present" oninput="updateResume()" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500 w-1/2">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 mb-1">Responsibilities & Achievements</label>
+                    <textarea id="formJobDesc" placeholder="• Led a team of 4 developers to build cloud platforms.&#10;• Optimized web apps reducing layout loading times by 40%." oninput="updateResume()" rows="4" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500 font-mono text-xs"></textarea>
+                </div>
+            </div>
+
+            <!-- Education Profile Section Block -->
+            <div class="space-y-4 border-t border-gray-100 pt-5">
+                <h3 class="text-sm font-semibold text-blue-600 tracking-wide uppercase">Education</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Institution Name</label>
+                        <input type="text" id="formSchool" placeholder="State University" oninput="updateResume()" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Degree / Course Major</label>
+                        <input type="text" id="formDegree" placeholder="B.S. in Computer Science" oninput="updateResume()" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 mb-1">Graduation Timeline</label>
+                    <input type="text" id="formEduDates" placeholder="Class of 2022" oninput="updateResume()" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500 w-1/2">
+                </div>
+            </div>
+
+            <!-- Technical / Core Skills Array Section Block -->
+            <div class="space-y-4 border-t border-gray-100 pt-5">
+                <h3 class="text-sm font-semibold text-blue-600 tracking-wide uppercase">Skills Selection</h3>
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 mb-1">Keywords (Comma Separated)</label>
+                    <input type="text" id="formSkills" placeholder="JavaScript, React, TailwindCSS, Git, Agile" oninput="updateResume()" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                </div>
+            </div>
+        </section>
+
+        <!-- Dynamic Target Rendering Layout A4 Canvas -->
+        <section class="bg-zinc-700 p-6 rounded-xl shadow-inner sticky top-[5.5rem] flex justify-center items-start overflow-y-auto max-h-[85vh]">
+            <!-- Encapsulated Element Framework configured specifically for Standard A4 scaling metrics -->
+            <div id="resumeCanvas" class="bg-white p-12 shadow-2xl w-[210mm] min-h-[297mm] text-gray-800 text-sm tracking-normal leading-normal box-border">
+                
+                <!-- Layout Header Section Wrapper -->
+                <div class="border-b-2 border-slate-800 pb-5 text-center">
+                    <h2 id="resName" class="text-3xl font-extrabold uppercase tracking-tight text-gray-900">John Doe</h2>
+                    <p id="resTitle" class="text-blue-600 font-semibold text-base mt-1 tracking-wide">Software Engineer</p>
+                    <div class="flex justify-center flex-wrap gap-x-5 gap-y-1 text-xs text-gray-500 mt-3 font-medium">
+                        <span id="resEmail">✉️ johndoe@example.com</span>
+                        <span id="resPhone">📞 (555) 019-2834</span>
+                        <span id="resLocation">📍 Austin, TX</span>
+                    </div>
+                </div>
+
+                <!-- Profile Executive Content Rendering Container -->
+                <div class="my-6">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-900 border-b border-gray-200 pb-1 mb-2">Professional Summary</h3>
+        function updateResume() {
+            // Evaluates real-time tracking bindings for structured fields
+            document.getElementById('resName').innerText = document.getElementById('formName').value.trim() || 'John Doe';
+            document.getElementById('resTitle').innerText = document.getElementById('formTitle').value.trim() || 'Software Engineer';
+            document.getElementById('resEmail').innerText = '✉️ ' + (document.getElementById('formEmail').value.trim() || 'johndoe@example.com');
+            document.getElementById('resPhone').innerText = '📞 ' + (document.getElementById('formPhone').value.trim() || '(555) 019-2834');
+            document.getElementById('resLocation').innerText = '📍 ' + (document.getElementById('formLocation').value.trim() || 'Austin, TX');
+            document.getElementById('resSummary').innerText = document.getElementById('formSummary').value.trim() || 'Motivated engineer with 5+ years of experience specialized in building high-performance web systems and micro-frontends.';
+            
+            document.getElementById('resCompany').innerText = document.getElementById('formCompany').value.trim() || 'Tech Innovations Inc.';
+            document.getElementById('resRole').innerText = document.getElementById('formRole').value.trim() || 'Senior Frontend Developer';
+            document.getElementById('resExpDates').innerText = document.getElementById('formExpDates').value.trim() || 'Jan 2023 - Present';
+            document.getElementById('resJobDesc').innerText = document.getElementById('formJobDesc').value.trim() || 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus, voluptatibus distinctio magnam optio illum vero excepturi temporibus molestiae inventore amet?';
+            
+            document.getElementById('resSchool').innerText = document.getElementById('formSchool').value.trim() || 'State University';
+            document.getElementById('resDegree').innerText = document.getElementById('formDegree').value.trim() || 'B.S. in Computer Science';
+            document.getElementById('resEduDates').innerText = document.getElementById('formEduDates').value.trim() || 'Class of 2022';
+
+            // Custom procedural formatting parser handling comma array inputs
+            const skillsContainer = document.getElementById('resSkills');
+            const skillsValue = document.getElementById('formSkills').value.trim();
+            skillsContainer.innerHTML = '';
+            
+            if (skillsValue) {
+                const skillsArr = skillsValue.split(',');
+                skillsArr.forEach(skill => {
+                    const cleanSkill = skill.trim();
+                    if (cleanSkill) {
+                        const node = document.createElement('span');
+                        node.className = "bg-gray-100 px-2.5 py-1 rounded text-xs border border-gray-200 text-gray-800 font-medium shadow-2xs";
+                        node.innerText = cleanSkill;
+                        skillsContainer.appendChild(node);
+                    }
+                });
+            } else {
+                // Fallback default state tracking architecture template markup injection
+                skillsContainer.innerHTML = `
+                    <span class="bg-gray-100 px-2 py-1 rounded text-xs border border-gray-200 font-medium">JavaScript</span>
+                    <span class="bg-gray-100 px-2 py-1 rounded text-xs border border-gray-200 font-medium">React</span>
+                    <span class="bg-gray-100 px-2 py-1 rounded text-xs border border-gray-200 font-medium">TailwindCSS</span>
+                `;
+            }
+        }
+
+        function downloadPDF() {
+            const element = document.getElementById('resumeCanvas');
+            const rawName = document.getElementById('formName').value.trim() || 'My';
+            const cleanFileName = rawName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            
+            // Standard PDF packaging execution configurations
+            const opt = {
+                margin:       0,
+                filename:     `${cleanFileName}_resume.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            // Fires compilation engine runtime pipeline loop asynchronously
+            html2pdf().set(opt).from(element).save();
+        }
